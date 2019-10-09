@@ -1,0 +1,118 @@
+﻿@inject IDmp64Service AudioService
+
+
+    <div class="slider-wrapper">
+        <input type="range" @bind="@Volume" min=@_min max=@_max />
+    </div>
+<div class="mute-wrapper">
+    <button class="btn btn-primary" style="margin:auto; background-color: @_color; " data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="@SetMute">Mute</button>
+    <p>Volume @_vol </p>
+    <br/>
+    Max Limit
+    <button @onclick="IncreaseMax">&#43</button>
+    <a>@_max</a>
+    <button @onclick="DecreaseMax">&#8722;</button>
+    <br/>
+    Min Limit
+    <button @onclick="IncreaseMin">&#43</button>
+    <a>@_min</a>
+    <button @onclick="DecreaseMin">&#8722;</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public int zoneId { get; set; }
+    private int _vol { get; set; }
+    private bool _isMuted { get; set; } = true;
+    private string _color = "blue";
+
+    public int Volume
+    {
+        get => _vol;
+        set
+        {
+            InvokeAsync(() => AudioService.SetVolume(zoneId, value) );
+            _vol = value;
+        }
+    }
+
+    private int _max = 1919;
+    private int _min = 1400;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AudioService.DataReceived += AudioChangeEvent;
+        await UpdateState();
+    }
+
+    void IncreaseMax() => _max += 2;
+
+    void DecreaseMax() => _max -= 2;
+
+    void IncreaseMin() => _min += 2;
+
+    void DecreaseMin() => _min -= 2;
+
+    public async Task<int> SetVolumeAsync(ChangeEventArgs e)
+    {
+        var vol = int.Parse(e.Value.ToString());
+        await AudioService.SetVolume(zoneId, vol);
+        _vol = vol;
+        return _vol;
+    }
+
+    public async Task SetMute()
+    {
+        _isMuted = _isMuted ? false : true;
+        await AudioService.SetMute(zoneId, _isMuted);
+        ChooseColor();
+    }
+
+    public async Task UpdateState()
+    {
+        _vol = await AudioService.GetVolume(zoneId);
+        _isMuted = AudioService.GetMute(zoneId);
+        if (_isMuted)
+        {
+            _color = "red";
+        }
+        else
+        {
+            _color = "blue";
+        }
+
+    }
+
+    public void GetVolumeAfterRender()
+    {
+       // _vol = AudioService.GetVolume(zoneId);
+        InvokeAsync(() => { StateHasChanged(); });
+    }
+
+    public void GetMuteAfterRender()
+    {
+        _isMuted = AudioService.GetMute(zoneId);
+        ChooseColor();
+    }
+
+    private void ChooseColor()
+    {
+        if (_isMuted)
+        {
+            _color = "red";
+        }
+        else
+        {
+            _color = "blue";
+        }
+        InvokeAsync(() => { StateHasChanged(); });
+    }
+
+    private void AudioChangeEvent(object sender, AudioChangeEvent e)
+    {
+
+        UpdateState();
+        InvokeAsync(() => { base.StateHasChanged(); });
+    }
+}
