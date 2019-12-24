@@ -1,1 +1,49 @@
-﻿
+﻿.topBarMuteButton {
+    min-width: 105px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.sliderDiv{
+    height: 180px;
+    padding-top: 3rem !important; 
+}
+.card-col{
+    min-width: 180px; 
+}
+.slidecontainer {
+    width: 100%; /* Width of the outside container */
+    
+}
+
+.slider {
+  -webkit-appearance: none;
+  border-radius: 5px;  
+  background: #d3d3d3;
+  outline: black;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  transform: rotate(-90deg);
+}
+
+    /* Mouse-over effects */
+    .slider:hover {
+        opacity: 1; /* Fully shown on mouse-over */
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #0517b4;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #0517b4;
+        cursor: pointer;
+    }

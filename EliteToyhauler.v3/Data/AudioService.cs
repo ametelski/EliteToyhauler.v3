@@ -42,7 +42,7 @@ namespace EliteToyhauler.v3.Data
 
         public void GetMute()
         {
-            IsMuted = _audioService.GetMute(ZoneId);
+            //IsMuted = _audioService.GetMute(ZoneId);
             ChooseColor(); 
         }
 

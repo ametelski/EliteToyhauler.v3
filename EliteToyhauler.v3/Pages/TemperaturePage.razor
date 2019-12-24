@@ -1,0 +1,19 @@
+﻿@page "/temperature"
+@using EliteToyhauler.v3.Sensor
+@inject Temperature Service
+
+<h3>Temperature</h3>
+<div class="card" style="width: 18rem;">
+    <div class="card-body text-center">
+        <h5 class="card-title">Inside Temperature</h5>
+        <h5>@Temperature&#176;</h5>
+    </div>
+</div>
+@code {
+    string Temperature = "0.0";
+    protected override void OnInitialized()
+    {
+        var t = Service.GetTemperature();
+        Temperature = t.ToString("F2");
+    }
+}

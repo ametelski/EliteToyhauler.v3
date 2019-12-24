@@ -16,6 +16,7 @@
     <ProjectReference Include="..\EliteToyhauler.v3.Application\EliteToyhauler.v3.Application.csproj" />
     <ProjectReference Include="..\EliteToyhauler.v3.Data\EliteToyhauler.v3.Data.csproj" />
     <ProjectReference Include="..\EliteToyhauler.v3.Dmp64\EliteToyhauler.v3.Dmp64.csproj" />
+    <ProjectReference Include="..\EliteToyhauler.v3.Sensor\EliteToyhauler.v3.Sensor.csproj" />
   </ItemGroup>
 
 

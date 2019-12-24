@@ -8,10 +8,8 @@ namespace EliteToyhauler.v3.Data
 {
     public class DataStore : IDataStore
     {
-        private string[] data = { "1501", "1501", "1500", "1500", "1500", "1", "1", "1", "1", "1" };
-
-        private Dictionary<int, int> AudioValues = new Dictionary<int, int>();
-        private Dictionary<int, bool> MuteValues = new Dictionary<int, bool>();
+        private Dictionary<int, int?> AudioValues = new Dictionary<int, int?>();
+        private Dictionary<int, bool?> MuteValues = new Dictionary<int, bool?>();
 
         private static Mutex mut = new Mutex();
 
@@ -21,12 +19,12 @@ namespace EliteToyhauler.v3.Data
                 return; 
             lock (AudioValues)
             {
-                AudioValues.Add(zoneId, 1501);
-                MuteValues.Add(zoneId, true); 
+                AudioValues.Add(zoneId, null);
+                MuteValues.Add(zoneId, null); 
             }
         }
 
-        public int GetZoneVolume(int zoneId)
+        public int? GetZoneVolume(int zoneId)
         {
             if (!AudioValues.ContainsKey(zoneId))
                 RegisterZones(zoneId);
@@ -35,7 +33,7 @@ namespace EliteToyhauler.v3.Data
                 return AudioValues[zoneId];  
         }
 
-        public bool GetZoneMute(int zoneId)
+        public bool? GetZoneMute(int zoneId)
         {
             if (!MuteValues.ContainsKey(zoneId))
                 RegisterZones(zoneId);
@@ -60,32 +58,5 @@ namespace EliteToyhauler.v3.Data
             lock (MuteValues)
                 MuteValues[zoneId] = value; 
         }
-
-
-        //public string GetDataByIndex(int index)
-        //{
-        //    if (index > data.Length)
-        //        return "0";
-        //    mut.WaitOne();
-        //    var value = data[index];
-        //    mut.ReleaseMutex();
-        //    return value;
-        //}
-
-        //public void SetAllData(string[] newData)
-        //{
-        //    mut.WaitOne();
-        //    data = newData;
-        //    mut.ReleaseMutex();
-        //}
-
-        //public bool SetValue(int index, string value)
-        //{ 
-        //    mut.WaitOne();
-        //    if (data[index] == value) return false; 
-        //    data[index] = value;
-        //    mut.ReleaseMutex();
-        //    return true; 
-        //}
     }
 }

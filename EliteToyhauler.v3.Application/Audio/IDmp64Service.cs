@@ -7,7 +7,7 @@ namespace EliteToyhauler.v3.Application.Audio
 {
     public interface IDmp64Service
     {
-        bool GetMute(int zoneId);
+        Task<bool> GetMute(int zoneId);
         Task <int> GetVolume(int zoneId);
         Task SetMute(int zoneId, bool isMuted);
         Task SetVolume(int zoneId, int volume);

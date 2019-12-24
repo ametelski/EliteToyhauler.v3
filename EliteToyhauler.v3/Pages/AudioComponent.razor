@@ -1,11 +1,13 @@
 ﻿@inject IDmp64Service AudioService
 
 
-    <div class="slider-wrapper">
-        <input type="range" @bind="@Volume" min=@_min max=@_max />
+    <div class="slideContainer">
+        <div class="sliderDiv">
+            <input type="range" class="slider" @bind="@Volume" min=@_min max=@_max />
+        </div>
     </div>
 <div class="mute-wrapper">
-    <button class="btn btn-primary" style="margin:auto; background-color: @_color; " data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="@SetMute">Mute</button>
+    <button class="btn btn-primary" style="margin:auto; background-color: @_color;" data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="@SetMute">Mute</button>
     <p>Volume @_vol </p>
     <br/>
     Max Limit
@@ -27,6 +29,9 @@
     private bool _isMuted { get; set; } = true;
     private string _color = "blue";
 
+    private int _max = 2108;
+    private int _min = 1400;
+
     public int Volume
     {
         get => _vol;
@@ -36,9 +41,6 @@
             _vol = value;
         }
     }
-
-    private int _max = 1919;
-    private int _min = 1400;
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,7 +74,7 @@
     public async Task UpdateState()
     {
         _vol = await AudioService.GetVolume(zoneId);
-        _isMuted = AudioService.GetMute(zoneId);
+        _isMuted = await AudioService.GetMute(zoneId);
         if (_isMuted)
         {
             _color = "red";
@@ -81,7 +83,7 @@
         {
             _color = "blue";
         }
-
+        await InvokeAsync(() => { StateHasChanged(); });
     }
 
     public void GetVolumeAfterRender()
@@ -92,7 +94,7 @@
 
     public void GetMuteAfterRender()
     {
-        _isMuted = AudioService.GetMute(zoneId);
+        //_isMuted = AudioService.GetMute(zoneId);
         ChooseColor();
     }
 

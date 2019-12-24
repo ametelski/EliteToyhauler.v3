@@ -28,7 +28,21 @@ namespace EliteToyhauler.v3.Dmp64.Client
                 return;
             _logger.LogDebug("Creating a new TCP client.");
             _client = new TcpClient();
-            await _client.ConnectAsync(_ipAddress, 23);
+            await _client.ConnectAsync(_ipAddress, 23).ConfigureAwait(false);
+            await ReadStartUpMessage().ConfigureAwait(false); 
+        }
+
+        private async Task ReadStartUpMessage()
+        {
+            var netstream = _client.GetStream();
+            using var reader = new StreamReader(netstream, leaveOpen: true);
+            // Optionally set a timeout
+            netstream.ReadTimeout = timeout;
+
+            while (netstream.DataAvailable)
+            {
+                await reader.ReadLineAsync().ConfigureAwait(false);
+            }
         }
 
         private bool SocketIsConnected()
@@ -48,8 +62,13 @@ namespace EliteToyhauler.v3.Dmp64.Client
 
         public async Task<string> SendAsync(string message)
         {
-            await Connect();
+            await Connect().ConfigureAwait(false);
             _logger.LogInformation($"Sending Message: {message}");
+            return await WriteAndReadAsync(message).ConfigureAwait(false); 
+        }
+
+        private async Task<string> WriteAndReadAsync(string message)
+        {
             string response = "";
             var netstream = _client.GetStream();
             using (var writer = new StreamWriter(netstream, leaveOpen: true))
@@ -58,15 +77,14 @@ namespace EliteToyhauler.v3.Dmp64.Client
                 // AutoFlush the StreamWriter
                 // so we don't go over the buffer
                 writer.AutoFlush = true;
-
                 // Optionally set a timeout
                 netstream.ReadTimeout = timeout;
 
                 // Write a message over the TCP Connection
-                await writer.WriteLineAsync(message);
+                await writer.WriteLineAsync(message).ConfigureAwait(false);
 
                 // Read server response
-                response = await reader.ReadLineAsync();
+                response = await reader.ReadLineAsync().ConfigureAwait(false);
 
                 _logger.LogInformation($"Received message: {response}");
             }

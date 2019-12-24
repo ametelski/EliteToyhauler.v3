@@ -1,0 +1,71 @@
+﻿@inject IDmp64Service AudioService
+
+<div>
+    <button @onclick="@(()=>SetMute(_zones[0]))" class="btn btn-primary topBarMuteButton" style="background-color: @_color[_zones[0]];">Inside</button>
+    <button @onclick="@(()=>SetMute(_zones[1]))" class="btn btn-primary topBarMuteButton" style="background-color: @_color[_zones[1]];">Outside</button>
+    <button @onclick="@(()=>SetMute(_zones[2]))" class="btn btn-primary topBarMuteButton" style="background-color: @_color[_zones[2]];">Subwoofer</button>
+</div>>
+
+@code {
+    private static int[] _zones = new [] {60000, 50002, 60003};
+
+    private Dictionary<int, bool> _isMuted = new Dictionary<int, bool> {
+        [_zones[0]] = true,
+        [_zones[1]] = true,
+        [_zones[2]] = true
+    };
+    private Dictionary<int, string> _color = new Dictionary<int, string> {
+        [_zones[0]] = "red",
+        [_zones[1]] = "red",
+        [_zones[2]] = "red"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        AudioService.DataReceived += AudioChangeEvent;
+        await UpdateState();
+    }
+
+    public async Task SetMute(int zoneId)
+    {
+        _isMuted[zoneId] = _isMuted[zoneId] ? false : true;
+        await AudioService.SetMute(zoneId, _isMuted[zoneId]);
+        ChooseColor(zoneId);
+    }
+
+    public async Task UpdateState()
+    {
+        foreach (var z in _zones)
+        {
+            _isMuted[z] = await AudioService.GetMute(z);
+            if (_isMuted[z])
+            {
+                _color[z] = "red";
+            }
+            else
+            {
+                _color[z] = "blue";
+            }
+        }
+        await InvokeAsync(() => { StateHasChanged(); });
+    }
+
+    private void ChooseColor(int zoneId)
+    {
+        if (_isMuted[zoneId])
+        {
+            _color[zoneId] = "red";
+        }
+        else
+        {
+            _color[zoneId] = "blue";
+        }
+        InvokeAsync(() => { StateHasChanged(); });
+    }
+
+    private void AudioChangeEvent(object sender, AudioChangeEvent e)
+    {
+        UpdateState();
+        //InvokeAsync(() => { base.StateHasChanged(); });
+    }
+}
