@@ -1,8 +1,9 @@
-﻿using System;
+﻿using EliteToyhauler.v3.Application;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
-using EliteToyhauler.v3.Application; 
+using System.Text.Json;
+using System.IO;
+using System.Reflection;
 
 namespace EliteToyhauler.v3.Data
 {
@@ -10,9 +11,8 @@ namespace EliteToyhauler.v3.Data
     {
         private Dictionary<int, int?> AudioValues = new Dictionary<int, int?>();
         private Dictionary<int, bool?> MuteValues = new Dictionary<int, bool?>();
-
         private static Mutex mut = new Mutex();
-
+       
         public void RegisterZones(int zoneId)
         {
             if (AudioValues.ContainsKey(zoneId))
@@ -58,5 +58,6 @@ namespace EliteToyhauler.v3.Data
             lock (MuteValues)
                 MuteValues[zoneId] = value; 
         }
+    
     }
 }

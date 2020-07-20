@@ -36,6 +36,7 @@ namespace EliteToyhauler.v3
             services.Configure<Dmp64Settings>(Configuration.GetSection("Dmp64").Bind);
 
             services.AddSingleton<IDataStore, DataStore>();
+            services.AddSingleton<IAudioSettingsService, SettingsStore>(); 
             services.AddSingleton<IDmp64TcpClient, Dmp64TcpClient>(); 
             services.AddSingleton<IDmp64Service, Dmp64Service>();
             services.AddTransient<Temperature>();

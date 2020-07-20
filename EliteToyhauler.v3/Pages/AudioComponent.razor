@@ -1,24 +1,16 @@
-﻿@inject IDmp64Service AudioService
+﻿@using Application;
+@inject IAudioSettingsService service;
+@inject IDmp64Service AudioService
 
 
-    <div class="slideContainer">
-        <div class="sliderDiv">
-            <input type="range" class="slider" @bind="@Volume" min=@_min max=@_max />
-        </div>
+<div class="slideContainer">
+    <div class="sliderDiv">
+        <input type="range" class="slider" @bind="@Volume" min=@_min max=@_max />
     </div>
+</div>
 <div class="mute-wrapper">
     <button class="btn btn-primary" style="margin:auto; background-color: @_color;" data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="@SetMute">Mute</button>
     <p>Volume @_vol </p>
-    <br/>
-    Max Limit
-    <button @onclick="IncreaseMax">&#43</button>
-    <a>@_max</a>
-    <button @onclick="DecreaseMax">&#8722;</button>
-    <br/>
-    Min Limit
-    <button @onclick="IncreaseMin">&#43</button>
-    <a>@_min</a>
-    <button @onclick="DecreaseMin">&#8722;</button>
 </div>
 
 
@@ -37,24 +29,19 @@
         get => _vol;
         set
         {
-            InvokeAsync(() => AudioService.SetVolume(zoneId, value) );
+            InvokeAsync(() => AudioService.SetVolume(zoneId, value));
             _vol = value;
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
+        var setting = service.GetAudioSettings(zoneId);
+        _min = setting.Min;
+        _max = setting.Max; 
         AudioService.DataReceived += AudioChangeEvent;
         await UpdateState();
     }
-
-    void IncreaseMax() => _max += 2;
-
-    void DecreaseMax() => _max -= 2;
-
-    void IncreaseMin() => _min += 2;
-
-    void DecreaseMin() => _min -= 2;
 
     public async Task<int> SetVolumeAsync(ChangeEventArgs e)
     {
@@ -88,7 +75,7 @@
 
     public void GetVolumeAfterRender()
     {
-       // _vol = AudioService.GetVolume(zoneId);
+        // _vol = AudioService.GetVolume(zoneId);
         InvokeAsync(() => { StateHasChanged(); });
     }
 

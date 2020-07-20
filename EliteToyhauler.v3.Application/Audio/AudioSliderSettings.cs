@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EliteToyhauler.v3.Application.Audio
 {
-    public class AudioSlider
+    public class AudioSliderSettings
     {
         public int Zone { get; set; }
         
@@ -12,6 +12,6 @@ namespace EliteToyhauler.v3.Application.Audio
         
         public int Max { get; set; }
 
-        public bool IsMuted { get; set; }
+        public string Name { get; set; }
     }
 }

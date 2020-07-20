@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteToyhauler.v3.Applicati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteToyhauler.v3.Dmp64", "EliteToyhauler.v3.Dmp64\EliteToyhauler.v3.Dmp64.csproj", "{3B758111-9855-49FA-A8CE-F14300F9E41D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteToyhauler.v3.Sensor", "EliteToyhauler.v3.Sensor\EliteToyhauler.v3.Sensor.csproj", "{998DDCEC-C56C-4AE3-976B-7E15D61E8C4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteToyhauler.v3.Sensor", "EliteToyhauler.v3.Sensor\EliteToyhauler.v3.Sensor.csproj", "{998DDCEC-C56C-4AE3-976B-7E15D61E8C4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
