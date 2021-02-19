@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -21,12 +22,20 @@ namespace EliteToyhauler.v3.Dmp64.Client
 
         public async Task Connect()
         {
-            if (_client != null && _client.Connected && SocketIsConnected())
-                return;
-            _logger.LogDebug("Creating a new TCP client.");
-            _client = new TcpClient();
-            await _client.ConnectAsync(_ipAddress, 23).ConfigureAwait(false);
-            await ReadStartUpMessage().ConfigureAwait(false); 
+            try
+            {
+                if (_client != null && _client.Connected && SocketIsConnected())
+                    return;
+                _logger.LogDebug("Creating a new TCP client.");
+                _client = new TcpClient();
+                await _client.ConnectAsync(_ipAddress, 23).ConfigureAwait(false);    
+
+                await ReadStartUpMessage().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical("exception. {ex}", ex); 
+            }
         }
 
         private async Task ReadStartUpMessage()
@@ -59,9 +68,17 @@ namespace EliteToyhauler.v3.Dmp64.Client
 
         public async Task<string> SendAsync(string message)
         {
-            await Connect().ConfigureAwait(false);
-            _logger.LogInformation($"Sending Message: {message}");
-            return await WriteAndReadAsync(message).ConfigureAwait(false); 
+            try
+            {
+                await Connect().ConfigureAwait(false);
+                _logger.LogInformation($"Sending Message: {message}");
+                return await WriteAndReadAsync(message).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return null; 
+            }
+            
         }
 
         private async Task<string> WriteAndReadAsync(string message)

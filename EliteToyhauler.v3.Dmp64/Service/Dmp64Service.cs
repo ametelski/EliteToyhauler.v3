@@ -31,6 +31,10 @@ namespace EliteToyhauler.v3.Dmp64.Service
                 return (bool)isMuted; 
            
             var result = await _client.SendAsync($"\x1BM{zoneId}AU\r").ConfigureAwait(false);
+
+            if (result is null)
+                return isMuted ?? true;          
+
             isMuted = result == "1" ? true : false; 
             _store.SetZoneMute(zoneId, (bool)isMuted);
             return (bool)isMuted; 
@@ -44,6 +48,10 @@ namespace EliteToyhauler.v3.Dmp64.Service
                 return (int)vol; 
 
             var result = await _client.SendAsync($"\x1BG{zoneId}AU\r").ConfigureAwait(false);
+
+            if (result is null)
+                return vol ?? 0; 
+            
             int value = int.Parse(result.TrimStart('0'));
             _store.SetZoneVolume(zoneId, value);
             return value; 
