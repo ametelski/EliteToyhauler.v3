@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EliteToyhauler.v3.Dmp64.Client
@@ -35,7 +32,7 @@ namespace EliteToyhauler.v3.Dmp64.Client
         private async Task ReadStartUpMessage()
         {
             var netstream = _client.GetStream();
-            using var reader = new StreamReader(netstream, leaveOpen: true);
+            using var reader = new StreamReader(netstream);
             // Optionally set a timeout
             netstream.ReadTimeout = timeout;
 
@@ -71,8 +68,8 @@ namespace EliteToyhauler.v3.Dmp64.Client
         {
             string response = "";
             var netstream = _client.GetStream();
-            using (var writer = new StreamWriter(netstream, leaveOpen: true))
-            using (var reader = new StreamReader(netstream, leaveOpen: true))
+            using (var writer = new StreamWriter(netstream))
+            using (var reader = new StreamReader(netstream))
             {
                 // AutoFlush the StreamWriter
                 // so we don't go over the buffer

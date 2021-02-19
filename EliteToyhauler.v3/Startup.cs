@@ -33,11 +33,11 @@ namespace EliteToyhauler.v3
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.Configure<Dmp64Settings>(Configuration.GetSection("Dmp64").Bind);
+            services.Configure<Dmp64Settings>(Configuration.GetSection(nameof(Dmp64Settings)));
 
             services.AddSingleton<IDataStore, DataStore>();
             services.AddSingleton<IAudioSettingsService, SettingsStore>(); 
-            services.AddSingleton<IDmp64TcpClient, Dmp64TcpClient>(); 
+            services.AddSingleton<IDmp64TcpClient, Dmp64Serial>(); 
             services.AddSingleton<IDmp64Service, Dmp64Service>();
             services.AddTransient<Temperature>();
         }
