@@ -70,18 +70,16 @@
         {
             _color = "blue";
         }
-        await InvokeAsync(() => { StateHasChanged(); });
+        await InvokeAsync(StateHasChanged); 
     }
 
     public void GetVolumeAfterRender()
     {
-        // _vol = AudioService.GetVolume(zoneId);
-        InvokeAsync(() => { StateHasChanged(); });
+        InvokeAsync(StateHasChanged);
     }
 
     public void GetMuteAfterRender()
     {
-        //_isMuted = AudioService.GetMute(zoneId);
         ChooseColor();
     }
 
@@ -95,13 +93,13 @@
         {
             _color = "blue";
         }
-        InvokeAsync(() => { StateHasChanged(); });
+        InvokeAsync(StateHasChanged);
     }
 
     private void AudioChangeEvent(object sender, AudioChangeEvent e)
     {
 
         UpdateState();
-        InvokeAsync(() => { base.StateHasChanged(); });
+        InvokeAsync(StateHasChanged);
     }
 }

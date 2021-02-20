@@ -34,7 +34,7 @@ namespace EliteToyhauler.v3.Dmp64.Client
             }
             catch (Exception ex)
             {
-                _logger.LogCritical("exception. {ex}", ex); 
+                _logger.LogCritical("Failed to connect to Dmp 64."); 
             }
         }
 
@@ -71,7 +71,7 @@ namespace EliteToyhauler.v3.Dmp64.Client
             try
             {
                 await Connect().ConfigureAwait(false);
-                _logger.LogInformation($"Sending Message: {message}");
+                _logger.LogTrace($"Sending Message: {message}");
                 return await WriteAndReadAsync(message).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -100,7 +100,7 @@ namespace EliteToyhauler.v3.Dmp64.Client
                 // Read server response
                 response = await reader.ReadLineAsync().ConfigureAwait(false);
 
-                _logger.LogInformation($"Received message: {response}");
+                _logger.LogTrace($"Received message: {response}");
             }
             return response;
         }
