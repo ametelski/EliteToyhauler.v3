@@ -1,105 +1,12 @@
 ﻿@using Application;
-@inject IAudioSettingsService service;
-@inject IDmp64Service AudioService
-
+@inherits AudioComponetBase
 
 <div class="slideContainer">
     <div class="sliderDiv">
-        <input type="range" class="slider" @bind="@Volume" min=@_min max=@_max />
+        <input type="range" class="slider" @bind="Volume" min=@_min max=@_max />
     </div>
 </div>
 <div class="mute-wrapper">
-    <button class="btn btn-primary" style="margin:auto; background-color: @_color;" data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="@SetMute">Mute</button>
+    <button class="btn btn-primary" style="margin:auto; background-color: @_color;" data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="SetMute">Mute</button>
     <p>Volume @_vol </p>
 </div>
-
-
-@code {
-    [Parameter]
-    public int zoneId { get; set; }
-    private int _vol { get; set; }
-    private bool _isMuted { get; set; } = true;
-    private string _color = "blue";
-
-    private int _max = 2108;
-    private int _min = 1400;
-
-    public int Volume
-    {
-        get => _vol;
-        set
-        {
-            InvokeAsync(() => AudioService.SetVolume(zoneId, value));
-            _vol = value;
-        }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var setting = service.GetAudioSettings(zoneId);
-        _min = setting.Min;
-        _max = setting.Max; 
-        AudioService.DataReceived += AudioChangeEvent;
-        await UpdateState();
-    }
-
-    public async Task<int> SetVolumeAsync(ChangeEventArgs e)
-    {
-        var vol = int.Parse(e.Value.ToString());
-        await AudioService.SetVolume(zoneId, vol);
-        _vol = vol;
-        return _vol;
-    }
-
-    public async Task SetMute()
-    {
-        _isMuted = _isMuted ? false : true;
-        await AudioService.SetMute(zoneId, _isMuted);
-        ChooseColor();
-    }
-
-    public async Task UpdateState()
-    {
-        _vol = await AudioService.GetVolume(zoneId);
-        _isMuted = await AudioService.GetMute(zoneId);
-        if (_isMuted)
-        {
-            _color = "red";
-        }
-        else
-        {
-            _color = "blue";
-        }
-        await InvokeAsync(StateHasChanged); 
-    }
-
-    public void GetVolumeAfterRender()
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void GetMuteAfterRender()
-    {
-        ChooseColor();
-    }
-
-    private void ChooseColor()
-    {
-        if (_isMuted)
-        {
-            _color = "red";
-        }
-        else
-        {
-            _color = "blue";
-        }
-        InvokeAsync(StateHasChanged);
-    }
-
-    private void AudioChangeEvent(object sender, AudioChangeEvent e)
-    {
-
-        UpdateState();
-        InvokeAsync(StateHasChanged);
-    }
-}
