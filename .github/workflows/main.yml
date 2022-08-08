@@ -4,7 +4,7 @@ on: [pull_request, push]
 
 jobs:
   conventional-commits-checker:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v2
