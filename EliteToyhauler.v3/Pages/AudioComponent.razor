@@ -1,12 +1,32 @@
-﻿@using Application;
-@inherits AudioComponetBase
+﻿@inherits AudioComponetBase
 
-<div class="slideContainer">
+<div class="volumeControllsContainer">
+    <div class="volumeControlDiv">
+        <div class="sliderDiv">
+            <input type="range" class="slider" @bind="Volume" min=@_min max=@_max />
+        </div>
+        <div class="volumeButtonDiv">
+            <button class="btn btn-primary" @onmousedown="IncreaseVolume" @onmouseup="Reset">+</button>
+            <div/>
+            <button class="btn btn-primary" @onclick="DecreaseVolume">-</button>
+        </div>
+    </div>
+    <div class="mute-wrapper">
+        <button class="btn btn-primary" style="margin:auto; background-color: @_color;" data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="SetMute">Mute</button>
+        <p>Volume @Volume </p>
+    </div>
+</div>
+
+@*<div class="slideContainer">
     <div class="sliderDiv">
         <input type="range" class="slider" @bind="Volume" min=@_min max=@_max />
+    </div>
+    <div class="volumeButtonDiv">
+        <button class="btn btn-primary">+</button>
+        <button class="btn btn-primary">-</button>
     </div>
 </div>
 <div class="mute-wrapper">
     <button class="btn btn-primary" style="margin:auto; background-color: @_color;" data-toggle="button" autocomplete="off" value="@_isMuted" @onclick="SetMute">Mute</button>
     <p>Volume @_vol </p>
-</div>
+</div>*@

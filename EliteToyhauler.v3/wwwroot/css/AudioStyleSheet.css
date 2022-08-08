@@ -1,4 +1,24 @@
-﻿.topBarMuteButton {
+﻿.card-body{
+/*    background-color:green;*/
+}
+.volumeControllsContainer{
+/*    background-color: peachpuff*/
+}
+.volumeControlDiv{
+/*    background-color: cadetblue;*/
+    display: inline-flex; 
+    margin: 3%;
+    height:130px;
+}
+.sliderDiv{
+/*    background-color: tan;*/
+    display:contents;
+}
+
+.volumeButtonDiv{
+/*    background-color: gray*/
+}
+/*.topBarMuteButton {
     min-width: 105px;
     margin-top: 10px;
     margin-left: 10px;
@@ -11,24 +31,29 @@
     min-width: 180px; 
 }
 .slidecontainer {
-    width: 100%; /* Width of the outside container */
-    
+    width: 100%;*/ /* Width of the outside container */
+/*}*/
+.volumeButtonDiv button {
+    display: block;
+    width: 60px;
+    height: 60px;
+    margin: 3%;
 }
 
 .slider {
-  -webkit-appearance: none;
-  border-radius: 5px;  
-  background: #d3d3d3;
-  outline: black;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
-  transform: rotate(-90deg);
+
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: black;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    transform: rotate(-90deg);
 }
 
     /* Mouse-over effects */
-    .slider:hover {
-        opacity: 1; /* Fully shown on mouse-over */
-    }
+    /*.slider:hover {
+        opacity: 1;*/ /* Fully shown on mouse-over */
+    /*}
 
     .slider::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -46,4 +71,4 @@
         border-radius: 50%;
         background: #0517b4;
         cursor: pointer;
-    }
+    }*/

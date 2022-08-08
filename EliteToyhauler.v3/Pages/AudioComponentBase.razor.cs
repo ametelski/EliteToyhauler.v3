@@ -1,7 +1,9 @@
 ﻿using EliteToyhauler.v3.Application;
 using EliteToyhauler.v3.Application.Audio;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace EliteToyhauler.v3.Pages
 {
@@ -14,12 +16,20 @@ namespace EliteToyhauler.v3.Pages
 
         [Parameter]
         public int zoneId { get; set; }
-        public int _vol { get; set; }
+        private int _vol { get; set; }
         public bool _isMuted { get; set; } = true;
         public string _color = "blue";
 
         public int _max = 2108;
         public int _min = 1400;
+        private Timer _timer;
+
+        public AudioComponetBase()
+        {
+            _timer = new Timer();
+            _timer.AutoReset = true; 
+        }
+
 
         public int Volume
         {
@@ -29,6 +39,21 @@ namespace EliteToyhauler.v3.Pages
                 InvokeAsync(() => AudioService.SetVolume(zoneId, value));
                 _vol = value;
             }
+        }
+
+        public void Reset()
+        {
+            _timer.Stop();
+        }
+
+        public void IncreaseVolume()
+        {
+            
+        }
+
+        public void DecreaseVolume()
+        {
+            Volume-=2; 
         }
 
         protected override async Task OnInitializedAsync()
