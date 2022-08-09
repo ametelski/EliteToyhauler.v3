@@ -1,12 +1,16 @@
-name: PR
-on: pull_request
+name: Conventional Commits
+
+on:
+  pull_request:
+    branches: [ master ]
+
 jobs:
-  conventional:
-    name: Conventional PR
+  build:
+    name: Conventional Commits
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - uses: beemojs/conventional-pr-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: webiny/action-conventional-commits@v1.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
