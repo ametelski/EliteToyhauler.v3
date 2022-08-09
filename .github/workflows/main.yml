@@ -1,9 +1,5 @@
-name: Test
-
-on:
-  pull_request:
-    branches: [master]
-    types: [opened, reopened, synchronize, edited, ready_for_review]
+name: PR
+on: pull_request
 
 jobs:
   conventional-commits:
