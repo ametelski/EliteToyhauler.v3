@@ -3,8 +3,6 @@ using EliteToyhauler.v3.Application.Audio;
 using EliteToyhauler.v3.Dmp64.Client;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EliteToyhauler.v3.Dmp64.Service
@@ -31,6 +29,10 @@ namespace EliteToyhauler.v3.Dmp64.Service
                 return (bool)isMuted; 
            
             var result = await _client.SendAsync($"\x1BM{zoneId}AU\r").ConfigureAwait(false);
+
+            if (result is null)
+                return isMuted ?? true;          
+
             isMuted = result == "1" ? true : false; 
             _store.SetZoneMute(zoneId, (bool)isMuted);
             return (bool)isMuted; 
@@ -44,6 +46,10 @@ namespace EliteToyhauler.v3.Dmp64.Service
                 return (int)vol; 
 
             var result = await _client.SendAsync($"\x1BG{zoneId}AU\r").ConfigureAwait(false);
+
+            if (result is null)
+                return vol ?? 0; 
+            
             int value = int.Parse(result.TrimStart('0'));
             _store.SetZoneVolume(zoneId, value);
             return value; 
@@ -54,6 +60,10 @@ namespace EliteToyhauler.v3.Dmp64.Service
             int mute = isMuted ? 1 : 0;
             _logger.LogInformation($"Setting mute for zone {zoneId} to {mute}.");
             var value = await _client.SendAsync($"\x1BM{zoneId}*{mute}AU\r").ConfigureAwait(false);
+
+            if (value is null)
+                isMuted = !isMuted; 
+            
             _store.SetZoneMute(zoneId, isMuted); 
             _logger.LogInformation($"Mute set for zone {zoneId} to {mute}. Invoking Event");
 
@@ -64,7 +74,11 @@ namespace EliteToyhauler.v3.Dmp64.Service
         {
             _logger.LogInformation($"Setting volume for zone {zoneId}. ");
             var value = await _client.SendAsync($"\x1BG{zoneId}*{volume}AU\r").ConfigureAwait(false);
-            _store.SetZoneVolume(zoneId, volume); 
+
+            if (value != null)
+                _store.SetZoneVolume(zoneId, volume);
+           
+            
             _logger.LogInformation($"Volume set for zone {zoneId}. \n\n");
             
             DataReceived?.Invoke(this, new AudioChangeEvent { Zone = zoneId}); 

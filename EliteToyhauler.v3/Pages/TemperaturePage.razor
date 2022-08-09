@@ -3,17 +3,23 @@
 @inject Temperature Service
 
 <h3>Temperature</h3>
+@foreach (var t in Temperatures)
+{
 <div class="card" style="width: 18rem;">
     <div class="card-body text-center">
-        <h5 class="card-title">Inside Temperature</h5>
-        <h5>@Temperature&#176;</h5>
+        <h5 class="card-title">@t.Item1</h5>
+        <h5>@t.Item2.ToString("F2")&#176;</h5>
     </div>
 </div>
+}
+
 @code {
     string Temperature = "0.0";
+    IEnumerable<(string, double)> Temperatures { get; set; }
+
     protected override void OnInitialized()
     {
-        var t = Service.GetTemperature();
-        Temperature = t.ToString("F2");
+        Temperatures = Service.GetTemperature();
+        //Temperature = t.ToString("F2");
     }
 }

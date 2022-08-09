@@ -5,12 +5,6 @@
   <ItemGroup>
     <None Include="wwwroot\SandDunes.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EliteToyhauler.v3.Application\EliteToyhauler.v3.Application.csproj" />

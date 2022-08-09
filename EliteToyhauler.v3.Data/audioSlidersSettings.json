@@ -1,0 +1,32 @@
+[
+  {
+    "Max": 2106,
+    "Min": 1400,
+    "Name": "Inside speaker",
+    "Zone": 60000
+  },
+  {
+    "Max": 2106,
+    "Min": 1400,
+    "Name": "Subwoofer",
+    "Zone": 60003
+  },
+  {
+    "Max": 2106,
+    "Min": 1400,
+    "Name": "Wifi Audio",
+    "Zone": 50000
+  },
+  {
+    "Max": 2106,
+    "Min": 1400,
+    "Name": "3.5 Audio",
+    "Zone": 50001
+  },
+  {
+    "Max": 2106,
+    "Min": 1400,
+    "Name": "Outside Speakers",
+    "Zone": 50002
+  }
+]

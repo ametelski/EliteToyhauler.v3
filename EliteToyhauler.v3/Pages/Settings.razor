@@ -1,0 +1,65 @@
+﻿@page "/settings"
+@using Application;
+@inject IAudioSettingsService service;
+
+
+<h3>Settings</h3>
+<table style="background-color:#F6F6F6">
+    <tr>
+        <th>Zone Name</th>
+        <th>Max</th>
+        <th>Min</th>
+    </tr>
+    @foreach (var slider in _audioSliderSettings)
+    {
+<tr>
+    <td>@slider.Name</td>
+    <td>
+        @slider.Max
+        <button @onclick="@(() => IncreaseMax(slider))">&#43</button>
+        <button @onclick="@(() => DecreaseMax(slider))">&#8722;</button>
+    </td>
+   
+    <td>
+        @slider.Min
+        <button @onclick="@(() => IncreaseMin(slider))">&#43</button>
+        <button @onclick="@(() => DecreaseMin(slider))">&#8722;</button>
+    </td>
+</tr>
+    }
+</table>
+<br>
+<button @onclick="HandleValidSubmit">Save</button>
+
+@code {
+
+    private List<AudioSliderSettings> _audioSliderSettings { get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        _audioSliderSettings = service.GetAudioSettings();
+    }
+
+    private void HandleValidSubmit()
+    {
+        service.SaveSettings(_audioSliderSettings);
+    }
+
+    void IncreaseMax(AudioSliderSettings settings)
+    {
+        settings.Max += 2; 
+    }
+     void DecreaseMax(AudioSliderSettings settings)
+    {
+        settings.Max -= 2; 
+    }
+
+     void IncreaseMin(AudioSliderSettings settings)
+    {
+        settings.Min += 2; 
+    }
+     void DecreaseMin(AudioSliderSettings settings)
+    {
+        settings.Min -= 2; 
+    }
+}

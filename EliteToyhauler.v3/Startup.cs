@@ -1,20 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using EliteToyhauler.v3.Application;
+using EliteToyhauler.v3.Application.Audio;
+using EliteToyhauler.v3.Data;
+using EliteToyhauler.v3.Dmp64;
+using EliteToyhauler.v3.Dmp64.Client;
+using EliteToyhauler.v3.Dmp64.Service;
+using EliteToyhauler.v3.Sensor;
+using EliteToyhauler.v3.Service;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using EliteToyhauler.v3.Data;
-using EliteToyhauler.v3.Dmp64;
-using EliteToyhauler.v3.Application;
-using EliteToyhauler.v3.Dmp64.Service;
-using EliteToyhauler.v3.Dmp64.Client;
-using EliteToyhauler.v3.Application.Audio;
-using EliteToyhauler.v3.Sensor;
 
 namespace EliteToyhauler.v3
 {
@@ -33,12 +29,15 @@ namespace EliteToyhauler.v3
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.Configure<Dmp64Settings>(Configuration.GetSection("Dmp64").Bind);
+            services.Configure<Dmp64Settings>(Configuration.GetSection(nameof(Dmp64Settings)));
 
             services.AddSingleton<IDataStore, DataStore>();
+            services.AddSingleton<IAudioSettingsService, SettingsStore>(); 
             services.AddSingleton<IDmp64TcpClient, Dmp64TcpClient>(); 
             services.AddSingleton<IDmp64Service, Dmp64Service>();
             services.AddTransient<Temperature>();
+
+            services.AddScoped<ToastService>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

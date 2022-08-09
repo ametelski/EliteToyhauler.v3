@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
@@ -24,24 +23,50 @@ namespace EliteToyhauler.v3.Dmp64.Client
 
         public async Task Connect()
         {
-            if (_client != null && _client.Connected && SocketIsConnected())
-                return;
-            _logger.LogDebug("Creating a new TCP client.");
-            _client = new TcpClient();
-            await _client.ConnectAsync(_ipAddress, 23).ConfigureAwait(false);
-            await ReadStartUpMessage().ConfigureAwait(false); 
+            try
+            {
+                if (_client != null && _client.Connected && SocketIsConnected())
+                    return;
+                _logger.LogDebug("Creating a new TCP client.");
+                _client = new TcpClient();
+                await _client.ConnectAsync(_ipAddress, 23).ConfigureAwait(false);    
+
+                await ReadStartUpMessage().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical("Failed to connect to Dmp 64."); 
+            }
         }
 
         private async Task ReadStartUpMessage()
         {
             var netstream = _client.GetStream();
-            using var reader = new StreamReader(netstream, leaveOpen: true);
+            //using var reader = new StreamReader(netstream);
             // Optionally set a timeout
             netstream.ReadTimeout = timeout;
-
-            while (netstream.DataAvailable)
+            if (netstream.CanRead)
             {
-                await reader.ReadLineAsync().ConfigureAwait(false);
+                byte[] myReadBuffer = new byte[1024];
+                StringBuilder myCompleteMessage = new StringBuilder();
+                int numberOfBytesRead = 0;
+
+                // Incoming message may be larger than the buffer size.
+                do
+                {
+                    numberOfBytesRead = netstream.Read(myReadBuffer, 0, myReadBuffer.Length);
+
+                    myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
+                }
+                while (netstream.DataAvailable);
+
+                // Print out the received message to the console.
+                Console.WriteLine("You received the following message : " +
+                                             myCompleteMessage);
+            }
+            else
+            {
+                Console.WriteLine("Sorry.  You cannot read from this NetworkStream.");
             }
         }
 
@@ -62,33 +87,47 @@ namespace EliteToyhauler.v3.Dmp64.Client
 
         public async Task<string> SendAsync(string message)
         {
-            await Connect().ConfigureAwait(false);
-            _logger.LogInformation($"Sending Message: {message}");
-            return await WriteAndReadAsync(message).ConfigureAwait(false); 
+            try
+            {
+                await Connect().ConfigureAwait(false);
+                _logger.LogTrace($"Sending Message: {message}");
+                return await WriteAndReadAsync(message).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return null; 
+            }
+            
         }
 
         private async Task<string> WriteAndReadAsync(string message)
         {
-            string response = "";
             var netstream = _client.GetStream();
-            using (var writer = new StreamWriter(netstream, leaveOpen: true))
-            using (var reader = new StreamReader(netstream, leaveOpen: true))
+
+            if (netstream.CanWrite)
             {
-                // AutoFlush the StreamWriter
-                // so we don't go over the buffer
-                writer.AutoFlush = true;
-                // Optionally set a timeout
-                netstream.ReadTimeout = timeout;
+                var bytes = Encoding.ASCII.GetBytes(message);
+                await netstream.WriteAsync(bytes, 0, bytes.Length);
+                if (netstream.CanRead)
+                {
+                    byte[] myReadBuffer = new byte[1024];
+                    StringBuilder myCompleteMessage = new StringBuilder();
+                    int numberOfBytesRead = 0;
 
-                // Write a message over the TCP Connection
-                await writer.WriteLineAsync(message).ConfigureAwait(false);
+                    // Incoming message may be larger than the buffer size.
+                    do
+                    {
+                        numberOfBytesRead = netstream.Read(myReadBuffer, 0, myReadBuffer.Length);
 
-                // Read server response
-                response = await reader.ReadLineAsync().ConfigureAwait(false);
+                        myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
+                    }
+                    while (netstream.DataAvailable);
 
-                _logger.LogInformation($"Received message: {response}");
+                    _logger.LogTrace($"Received message: {myCompleteMessage}");
+                    return myCompleteMessage.ToString(); 
+                }
             }
-            return response;
+            return null; 
         }
     }
 }
